@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from problems.models import MCQQuestion, MCQAnswer, UserProfile, UserAdaptiveTestLog, UserAdaptiveTestAttemptLog, Config, UserAdaptiveTestScoreLog
-from problems.serializers import UserProfileSerializer, MCQQuestionSerializer
+from problems.serializers import UserProfileSerializer, MCQQuestionSerializer, UserAdaptiveTestScoreLogSerializer
 from django.http import JsonResponse, HttpResponse
 from datetime import timedelta
 from django.utils import timezone
@@ -89,7 +89,7 @@ def attempt_question(request, id):
 		UserAdaptiveTestAttemptLog.objects.filter(test = test).update(status='F')
 		recompute_window_and_save(test, True, False)
 		print "returned here 2"
-		return JsonResponse({"test_score": test.score})
+		return JsonResponse({"test_score": test.score, "analytics": get_analytics(test)})
 
 	answer = MCQAnswer.objects.get(id = answer_id)
 	question = answer.question
@@ -108,7 +108,7 @@ def attempt_question(request, id):
 		if test.set_remaining == 1:
 			recompute_window_and_save(test, True, True)
 			print "returned here 4"
-			return JsonResponse({"test_score": test.score})
+			return JsonResponse({"test_score": test.score, "analytics": get_analytics(test)})
 		recompute_window_and_save(test, False, True)
 	else:
 		test.question_remaining_in_set = test.question_remaining_in_set - 1
@@ -116,7 +116,7 @@ def attempt_question(request, id):
 
 	if test.score <= 0 or test.score >= 100:
 		print "returned here 5"
-		return JsonResponse({"test_score": test.score})
+		return JsonResponse({"test_score": test.score, "analytics": get_analytics(test)})
 
 	next_question = get_next_question(test)
 	UserAdaptiveTestAttemptLog(test = test, question = next_question).save()
@@ -180,10 +180,9 @@ def calculate_set_score(attempts):
     	if attempt.answer and attempt.answer.correct:
     		attempt_time_taken = (attempt.end_time - attempt.start_time).total_seconds()
     		attempt_time_random = 2 * math.sqrt(20 * attempt.question.solvability + 250)
-    		print attempt.question.solvability, attempt_time_random
     		summation = summation + attempt.question.score * (attempt.question.initial_average_time + attempt_time_random) / (attempt_time_taken + attempt_time_random)
     	total_window_score = total_window_score + attempt.question.score
-    return summation / total_window_score
+    return (summation / total_window_score) if total_window_score > 0 else 0.0
 
 
 def get_next_question(test):
@@ -202,3 +201,6 @@ def get_next_question(test):
 
 	random_index = random.randint(0, count - 1)
 	return all_questions[random_index]
+
+def get_analytics(test):
+	return UserAdaptiveTestScoreLogSerializer(test.useradaptivetestscorelog_set.order_by('set_number'), many=True).data

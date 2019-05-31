@@ -5,6 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 		<script type="text/javascript" src="{% static 'jquery.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'test.js' %}"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
 	</head>
 	<body>
 		<input type="hidden" name="user_id" />
@@ -21,6 +22,7 @@
 		<div class="test-ended">
 			Your test has ended and your score is <span class="test-ended-score-ph"></span>
 		</div>
+		<div class="test-analytics" id="test-analytics"></div>
 		<div class="test-wrapper">
 			<div class="header">
 				<div class="test-bar">

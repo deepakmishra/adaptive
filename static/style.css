@@ -235,3 +235,10 @@
     margin-left: 10px;
 }
 
+.test-analytics {
+	position: absolute;
+	top:30%;
+	left:10%;
+	width:80%; 
+	height:300px;
+}

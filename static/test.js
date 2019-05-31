@@ -17,6 +17,9 @@ $(document).ready(function() {
 						var date_str = new Date(data['last_test']['expiry_time']).toGMTString();
 						var obj = $(".not-eligible").text($(".not-eligible").text() + "\n\nLast Score : " + data['last_test']['score'] + "\n\nExpiry Date : " + date_str);
 						obj.html(obj.html().replace(/\n/g, '<br/>'));
+						if (data['last_test']['analytics']) {
+							analytics(data['last_test']['analytics']);
+						}
 					}
 					$(".first-page").hide();
 					$(".not-eligible").show();
@@ -40,7 +43,7 @@ $(document).ready(function() {
 
 	$(".test-end").click(function() {
 		$.post("api/users/" + $('input[name=user_id]').val() + "/attempts", {"answer_id": 0})
-			.done(populate_question);		
+			.done(populate_question);
 	});
 
 
@@ -85,6 +88,9 @@ var populate_question = function(data) {
 		$(".test-ended").show();
 		$(".test-wrapper").hide();
 		clear_timer();
+		if (data['analytics']) {
+			analytics(data['analytics']);
+		}
 		return;
 	}
 
@@ -126,4 +132,61 @@ var populate_question = function(data) {
 
 	$(".first-page").hide();
 	$(".test-wrapper").show();
+	$("#test-analytics").hide();
 }
+
+function analytics(analytics_data) {
+
+	data_points = []
+	analytics_data.forEach(function(a){data_points.push(a.score);});
+
+	$("#test-analytics").show();
+
+	Highcharts.chart('test-analytics', {
+
+		title: {
+			text: 'Performance over the test'
+		},
+		subtitle: {
+			text: 'Breaking Point'
+		},
+		yAxis: {
+			title: {
+				text: 'Test Score'
+			}
+		},
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle'
+		},
+		plotOptions: {
+			series: {
+				label: {
+					connectorAllowed: false
+				},
+				pointStart: 0
+			}
+		},
+		series: [{
+			name: 'Score',
+			data: data_points
+		}],
+		responsive: {
+			rules: [{
+				condition: {
+					maxWidth: 500
+				},
+				chartOptions: {
+					legend: {
+						layout: 'horizontal',
+						align: 'center',
+						verticalAlign: 'bottom'
+					}
+				}
+			}]
+		}
+	});
+}
+
+
