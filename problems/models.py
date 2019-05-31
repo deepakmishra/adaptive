@@ -1,10 +1,21 @@
 from django.db import models
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
+
+class AutoDateTimeField(models.DateTimeField):
+    def pre_save(self, model_instance, add):
+        return timezone.now()
 
 class Config(models.Model):
 	key = models.CharField(max_length = 128, unique = True)
 	value = models.CharField(max_length = 128)
 
+	@staticmethod
+	def get(key, default_value):
+		if not Config.objects.filter(key = key).exists():
+			Config(key=key, value=default_value).save()
+		return Config.objects.get(key = key).value
+ 
 class MCQQuestion(models.Model):
 	text = models.TextField()
 	score = models.IntegerField()
@@ -24,12 +35,10 @@ class UserProfile(models.Model):
 	@property
 	def eligible(self):
 		if not self.useradaptivetestlog_set.exists():
-			if not Config.objects.filter(key = 'total_questions_attempted_to_be_eligigle').exists():
-				Config(key='total_questions_attempted_to_be_eligigle', value=10).save()
-			return self.total_questions_attempted >= int(Config.objects.get(key = 'total_questions_attempted_to_be_eligigle').value)
+			return self.total_questions_attempted >= int(Config.get('total_questions_attempted_to_be_eligigle', 10))
 		else:
 			test = self.useradaptivetestlog_set.order_by("-start_time")[0]
-			return test.expiry_time <= datetime.now()
+			return test.status in ['O', 'P'] or test.expiry_time <= timezone.now()
 
 	@property
 	def last_test(self):
@@ -40,11 +49,10 @@ class UserProfile(models.Model):
 class UserAdaptiveTestLog(models.Model):
 	choices = (('O', 'ONGOING'), ('P', 'PAUSED'), ('F','FINISHED'))
 	user = models.ForeignKey(UserProfile)
-	seconds_remaining = models.IntegerField(default = 0)
 	set_remaining = models.IntegerField(default = 0)
 	question_remaining_in_set = models.IntegerField(default = 0)
-	status = models.CharField(choices = choices, max_length = 1, default = 'F')
-	start_time = models.DateTimeField(default=datetime.now, blank=True)
+	status = models.CharField(choices = choices, max_length = 1, default = 'O')
+	start_time = models.DateTimeField(default=timezone.now)
 	window_start = models.IntegerField(default = 0)
 	window_end = models.IntegerField(default = 0)
 
@@ -55,17 +63,26 @@ class UserAdaptiveTestLog(models.Model):
 			s = 0
 		elif s > 100:
 			s = 100
-		return s
+		return round(s)
 
 	@property
 	def expiry_time(self):
-		if not Config.objects.filter(key = 'test_expiry_time_in_days').exists():
-			Config(key='test_expiry_time_in_days', value=60).save()
-		return self.start_time + timedelta(days=int(Config.objects.get(key = 'test_expiry_time_in_days').value))
+		return self.start_time + timedelta(days=int(Config.get('test_expiry_time_in_days', 60)))
 
-class UserAdaptiveTestAttemptLog(object):
+
+class UserAdaptiveTestScoreLog(models.Model):
+	test = models.ForeignKey(UserAdaptiveTestLog)
+	set_number = models.IntegerField(default = 0)
+	score = models.IntegerField(default = 0)
+	unique_together = ('test', 'set_number')
+
+
+class UserAdaptiveTestAttemptLog(models.Model):
+	choices = (('W', 'WAITING'), ('F','FINISHED'))
 	test = models.ForeignKey(UserAdaptiveTestLog)
 	question = models.ForeignKey(MCQQuestion)
-	answer = models.ForeignKey(MCQAnswer)
-	seconds_time = models.IntegerField(default = 0)
+	answer = models.ForeignKey(MCQAnswer, null=True)
+	start_time = models.DateTimeField(default=timezone.now)
+	end_time = AutoDateTimeField(default=timezone.now)
+	status = models.CharField(choices = choices, max_length = 1, default = 'W')
 	unique_together = ('test', 'question')

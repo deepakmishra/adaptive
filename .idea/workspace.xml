@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3e369fb-f615-42e8-b238-253b2bfb1a85" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/adaptive_app/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/adaptive_app/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/adaptive_app/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adaptive_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/adaptive_app/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adaptive_app/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/problems/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/problems/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/problems/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/problems/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/problems/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/problems/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,8 +59,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/problems/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="34" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+            <state relative-caret-position="355">
+              <caret line="62" column="40" selection-start-line="62" selection-start-column="14" selection-end-line="62" selection-end-column="40" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -129,6 +126,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -212,8 +210,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/problems/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="34" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+        <state relative-caret-position="355">
+          <caret line="62" column="40" selection-start-line="62" selection-start-column="14" selection-end-line="62" selection-end-column="40" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>

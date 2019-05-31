@@ -1,0 +1,63 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Breaking Point</title>
+		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+		<script type="text/javascript" src="{% static 'jquery.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'test.js' %}"></script>
+	</head>
+	<body>
+		<input type="hidden" name="user_id" />
+
+		<div class="first-page">
+			<input type="text" class="email-box" placeholder="Enter email here" name="email"/>
+			<div class="start-test">
+				Start Test
+			</div>
+		</div>
+		<div class="not-eligible">
+			You are not eligible for the test.
+		</div>
+		<div class="test-ended">
+			Your test has ended and your score is <span class="test-ended-score-ph"></span>
+		</div>
+		<div class="test-wrapper">
+			<div class="header">
+				<div class="test-bar">
+					<span class="test-bar-left">
+						<a href="https://www.hackerearth.com" class="logo"></a>
+						<span class="test-title">JAVA Test</span>
+					</span>
+					<span class="test-timer">timer</span>
+					<span class="test-bar-right">
+						<span class="candidate-name">candidate-name</span>
+						<span class="test-end">END TEST</span>
+					</span>
+				</div>
+			</div>
+			<div class="test-box">
+				<div class="test-question-number">
+					Question <span class="test-question-number-ph">1</span>
+					<span class="test-score">Score: <b><span class="test-score-ph">86</span></b></span>
+				</div>
+				<div class="test-question-answer">
+					<div class="test-question">
+						What is JAVA?
+					</div>
+					<ul class="test-answer-list">
+						<li>
+							<div class="test-answer">
+								<div class="objective-virtual-radio"></div>
+								<input class="objective-radio" type="radio" name="correct_ans" value="6363018">
+								<span class="test-answer-text">A Programming Language</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="test-submit-button">
+					Submit
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -16,9 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from problems import views 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-	url(r'api/users/(?P<id>\d+)/tests', views.start_test),
-	url(r'api/users/(?P<id>\d+)/attempts', views.attempt_question),
-	url(r'api/users/(?P<id>\d+)', views.user_profile),
-]
+	url(r'^api/users/(?P<id>\d+)/tests', views.start_test),
+	url(r'^api/users/(?P<id>\d+)/attempts', views.attempt_question),
+	url(r'^api/users/(?P<id>\d+)', views.user_profile),
+	url(r'^api/users/search', views.email_profile),
+	url(r'^test', views.test_page),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
